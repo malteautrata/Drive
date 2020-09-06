@@ -6,7 +6,7 @@
 void callback();
 ros::Publisher pub;
 ros::Subscriber sub;
-
+bool shouldDodge = false;
 bool randomBool()
 {
     return rand() % 2;
@@ -15,24 +15,46 @@ bool randomBool()
 void callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
     geometry_msgs::Twist twist;
+    //int num_readings = std::ceil( (msg->angle_max - msg->angle_min) / msg->angle_increment );
+    //std::cout << num_readings << std::endl;
+    std::cout << msg->ranges[350] << std::endl;
 
-    if(msg->ranges[0] <= 0.3)
+    shouldDodge = false;
+
+    for(int i = 0; i <= 10; i++)
+    {
+        if (msg->ranges[i] <= 0.2)
+        {
+            shouldDodge = true;
+        }
+    }
+/*
+    for(int i = 350; i <= 359; i++)
+    {
+        if (msg->ranges[i] <= 0.2)
+        {
+            shouldDodge = true;
+        }
+    }*/
+
+    if(shouldDodge)
     {
         twist.linear.x = 0.0; twist.linear.y = 0.0; twist.linear.z = 0.0;
         std::cout << randomBool() << std::endl;
         if(randomBool() == 1)
         {
-            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 90.0;
+            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 10.0;
 
         }
         else {
-            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = -90.0;
+            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 10.0;
 
         }
     } else {
         twist.linear.x = 0.5; twist.linear.y = 0.0; twist.linear.z = 0.0;
     }
     pub.publish(twist);
+    
 }
 
 int main(int argc, char** argv){
