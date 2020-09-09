@@ -2,11 +2,14 @@
 #include <tf/transform_broadcaster.h>
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
+#include <thread>         
 
 void callback();
 ros::Publisher pub;
 ros::Subscriber sub;
 bool shouldDodge = false;
+bool isTurning;
+bool turnLeft;
 bool randomBool()
 {
     return rand() % 2;
@@ -36,17 +39,17 @@ void callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 
     shouldDodge = false;
 
-    for(int i = 1; i <= 40; i++)
+    for(int i = 1; i <= 45; i++)
     {
-        if (msg->ranges[i] <= 0.1 && msg->ranges[i] >= 0.0001)
+        if (msg->ranges[i] <= 0.15 && msg->ranges[i] >= 0.0001)
         {
             shouldDodge = true;
         }
     }
 
-    for(int i = 320; i <= 359; i++)
+    for(int i = 315; i <= 359; i++)
     {
-        if (msg->ranges[i] <= 0.1 && msg->ranges[i] >= 0.0001)
+        if (msg->ranges[i] <= 0.15 && msg->ranges[i] >= 0.0001)
         {
             shouldDodge = true;
         }
@@ -61,18 +64,44 @@ void callback(const sensor_msgs::LaserScan::ConstPtr& msg)
     {
         twist.linear.x = 0.0; twist.linear.y = 0.0; twist.linear.z = 0.0;
         std::cout << randomBool() << std::endl;
-        if(randomBool() == 1)
+
+        if (isTurning)
+       {
+
+       } else
+       {
+           turnLeft = randomBool();
+       }
+       
+       isTurning = true;
+
+        if(turnLeft)
         {
             twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 10.0;
 
-        }
-        else {
+        } else 
+        {
             twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = -10.0;
 
         }
-    } else {
+    } else 
+    {
         twist.linear.x = 0.5; twist.linear.y = 0.0; twist.linear.z = 0.0;
+        isTurning = false;
     }
+    pub.publish(twist);
+}
+
+void launchSlam()
+{
+    system("roslaunch turtlebot3_slam turtlebot3_slam.launch slam_methods:=gmapping");
+}
+
+void cleanShutdown()
+{
+    geometry_msgs::Twist twist;
+    twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 0.0;
+    twist.linear.x = 0.0; twist.linear.y = 0.0; twist.linear.z = 0.0;
     pub.publish(twist);
 }
 
@@ -84,6 +113,9 @@ int main(int argc, char** argv){
     ros::NodeHandle n;
     pub = n.advertise<geometry_msgs::Twist>("cmd_vel", 10);
     sub = n.subscribe("/scan", 10, callback);
+
+    std::thread slamThread (launchSlam); 
+
     while(ros::ok())
     {
         ros::spin();
