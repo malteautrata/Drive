@@ -77,11 +77,11 @@ void callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 
         if(turnLeft)
         {
-            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 10.0;
+            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 5.0;
 
         } else 
         {
-            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = -10.0;
+            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = -5.0;
 
         }
     } else 
@@ -100,10 +100,7 @@ void launchSlam()
 // wird nicht genutzt
 void cleanShutdown()
 {
-    geometry_msgs::Twist twist;
-    twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 0.0;
-    twist.linear.x = 0.0; twist.linear.y = 0.0; twist.linear.z = 0.0;
-    pub.publish(twist);
+    
 }
 
 int main(int argc, char** argv){
