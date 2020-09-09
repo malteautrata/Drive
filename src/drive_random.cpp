@@ -86,7 +86,7 @@ void callback(const sensor_msgs::LaserScan::ConstPtr& msg)
         }
     } else 
     {
-        twist.linear.x = 0.0; twist.linear.y = 0.0; twist.linear.z = 0.0;
+        twist.linear.x = 0.5; twist.linear.y = 0.0; twist.linear.z = 0.0;
         isTurning = false;
     }
     pub.publish(twist);
