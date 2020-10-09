@@ -41,7 +41,7 @@ void callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 
     for(int i = 1; i <= 45; i++)
     {
-        if (msg->ranges[i] <= 0.15 && msg->ranges[i] >= 0.0001)
+        if (msg->ranges[i] <= 0.2 && msg->ranges[i] >= 0.0001)
         {
             shouldDodge = true;
         }
@@ -49,13 +49,13 @@ void callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 
     for(int i = 315; i <= 359; i++)
     {
-        if (msg->ranges[i] <= 0.15 && msg->ranges[i] >= 0.0001)
+        if (msg->ranges[i] <= 0.2 && msg->ranges[i] >= 0.0001)
         {
             shouldDodge = true;
         }
     }
 
-    if (msg->ranges[0] <= 0.2)
+    if (msg->ranges[0] <= 0.4)
     {
         shouldDodge = true;
     }
@@ -77,16 +77,16 @@ void callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 
         if(turnLeft)
         {
-            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 5.0;
+            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 2.0;
 
         } else 
         {
-            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = -5.0;
+            twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = -2.0;
 
         }
     } else 
     {
-        twist.linear.x = 0.5; twist.linear.y = 0.0; twist.linear.z = 0.0;
+        twist.linear.x = 0.3; twist.linear.y = 0.0; twist.linear.z = 0.0;
         isTurning = false;
     }
     pub.publish(twist);
