@@ -205,6 +205,4 @@ include_directories(
 add_executable(drive_random src/drive_random.cpp)
 target_link_libraries(drive_random ${catkin_LIBRARIES})
 
-add_executable(end src/end.cpp)
-target_link_libraries(end ${catkin_LIBRARIES})
 
