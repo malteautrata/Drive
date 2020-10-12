@@ -151,7 +151,7 @@ void callback(const sensor_msgs::LaserScan::ConstPtr& msg)
     }
 
     // die Hindernisse direkt vor dem Roboter werden mit einem größeren Abstand (40 cm) abgefragt
-    if (msg->ranges[0] <= 0.4 && msg->ranges[i] > 0)
+    if (msg->ranges[0] <= 0.4 && msg->ranges[0] > 0)
     {
         shouldDodge = true;
     }
